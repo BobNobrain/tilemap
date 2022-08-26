@@ -1,7 +1,8 @@
-import { getElevationDifferencePx, roundWorldCoords, WorldCoords } from '../coords';
+import { add, EAST, getElevationDifferencePx, NORTH, SOUTH, WEST, WorldCoords } from '../coords';
 import { Rect2D } from '../coords/types';
 import { iterateWorldCoordsInViewport } from '../coords/viewport';
-import { SimpleTile } from '../tile/SimpleTile';
+import type { SimpleTile } from '../tile/SimpleTile';
+import { TileNeighbourhood } from '../tile/types';
 import { grassTile } from '../tiles/grass';
 import { sandTile } from '../tiles/sand';
 
@@ -9,9 +10,9 @@ export interface WorldTile {
     tile: SimpleTile;
     position: Readonly<WorldCoords>;
 }
+
 export interface TileRenderInfo extends WorldTile {
-    leftElevationPx: number;
-    rightElevationPx: number;
+    neighbours: TileNeighbourhood;
 }
 
 export class World {
@@ -21,13 +22,19 @@ export class World {
         const result: TileRenderInfo[] = [];
         for (let c of iterateWorldCoordsInViewport(viewport)) {
             const { tile, position } = this.getTileAt(c);
-            const left = this.getTileAt({ ...c, z: c.z - 1 });
-            const right = this.getTileAt({ ...c, x: c.x + 1 });
+            const southEv = this.getElevationAt(add(c, SOUTH));
+            const eastEv = this.getElevationAt(add(c, EAST));
+            const northEv = this.getElevationAt(add(c, NORTH));
+            const westEv = this.getElevationAt(add(c, WEST));
             result.push({
                 tile,
                 position,
-                leftElevationPx: getElevationDifferencePx(position.y, left.position.y),
-                rightElevationPx: getElevationDifferencePx(position.y, right.position.y),
+                neighbours: {
+                    southElevationPx: getElevationDifferencePx(position.y, southEv),
+                    eastElevationPx: getElevationDifferencePx(position.y, eastEv),
+                    isNorthOverhang: northEv < position.y,
+                    isWestOverhang: westEv < position.y,
+                },
             });
         }
         return result;
@@ -49,7 +56,7 @@ export class World {
             return {
                 position: {
                     ...coords,
-                    y: 0,
+                    y: this.generateElevationAt(coords),
                 },
                 tile: sandTile,
             };
@@ -58,9 +65,20 @@ export class World {
         return {
             position: {
                 ...coords,
-                y: Math.random(), // (coords.z - coords.x) / 4,
+                y: this.generateElevationAt(coords),
             },
             tile: grassTile,
         };
+    }
+
+    private generateElevationAt(coords: Readonly<WorldCoords>): number {
+        return Math.random();
+    }
+    private getElevationAt(coords: Readonly<WorldCoords>): number {
+        const memo = this.tileData[coords.x]?.[coords.z]?.position.y;
+        if (memo === undefined) {
+            return this.getTileAt(coords).position.y;
+        }
+        return memo;
     }
 }

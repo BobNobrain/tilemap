@@ -15,7 +15,7 @@ connectToDom({
 
         const tiles = world.getTilesToRender(viewport);
         for (const t of tiles) {
-            t.tile.renderAt(ui.ctx, t.position, t);
+            t.tile.renderAt(ui.ctx, t.position, t.neighbours);
         }
 
         ui.ctxRaw.strokeStyle = 'red';
@@ -26,6 +26,6 @@ connectToDom({
             viewport.bottomRight.top - viewport.topLeft.top,
         );
     },
-    pixelSize: 4,
+    pixelSize: 6,
 });
 

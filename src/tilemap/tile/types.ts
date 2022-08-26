@@ -15,3 +15,10 @@ export interface TextureColors {
     secondary: Palette;
     ternary: Palette;
 }
+
+export interface TileNeighbourhood {
+    southElevationPx: number;
+    eastElevationPx: number;
+    isNorthOverhang: boolean;
+    isWestOverhang: boolean;
+}

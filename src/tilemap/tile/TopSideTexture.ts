@@ -20,8 +20,22 @@ const COORDS: Coord[] = [
     [0, 4], [1, 4],
 ];
 
+const borderTypesByIndex: Record<number, 'l' | 'r' | undefined> = {
+    0: 'l', 1: 'r',
+    2: 'l', 3: 'l', 6: 'r', 7: 'r',
+    8: 'l', 9: 'l', 16: 'r', 17: 'r',
+    18: 'l', 19: 'l', 30: 'r', 31: 'r',
+    32: 'l', 47: 'r',
+};
+
+export interface TopTextureRenderOptions {
+    leftBorder: boolean;
+    rightBorder: boolean;
+}
+
 export class TopTexture {
     private colors: string[];
+    private borderColors: Record<'l' | 'r', string>;
 
     constructor(
         colors: TextureColors,
@@ -50,12 +64,24 @@ export class TopTexture {
         };
 
         this.colors = data.map((n) => repMap[n]);
+        this.borderColors = {
+            l: colors.primary.light,
+            r: colors.primary.dark,
+        };
     }
 
-    render(ctx: RenderContext, { left, top }: Coords2D): void {
+    render(
+        ctx: RenderContext,
+        { left, top }: Coords2D,
+        { leftBorder, rightBorder }: TopTextureRenderOptions,
+    ): void {
         for (let i = 0; i < this.colors.length; i++) {
-            const color = this.colors[i];
+            let color = this.colors[i];
             const offset = COORDS[i];
+            const borderType = borderTypesByIndex[i];
+            if (borderType && (borderType === 'l' && leftBorder || borderType == 'r' && rightBorder)) {
+                color = this.borderColors[borderType];
+            }
 
             ctx.putPixel(
                 color,

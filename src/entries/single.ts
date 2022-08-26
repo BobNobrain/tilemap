@@ -7,8 +7,10 @@ connectToDom({
     pixelSize: 8,
     render(ui) {
         grassTile.renderAt(ui.ctx, WORLD_ZERO, {
-            leftElevationPx: 4,
-            rightElevationPx: 2,
+            southElevationPx: 4,
+            eastElevationPx: 2,
+            isNorthOverhang: false,
+            isWestOverhang: false,
          });
 
         // const N = 5;

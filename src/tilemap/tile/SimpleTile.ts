@@ -1,11 +1,6 @@
 import { RenderContext } from '../../ui/ctx';
-import { HALF_TILE_HEIGHT, HALF_TILE_WIDTH, round2DCoords, WorldCoords, worldToCanvas } from '../coords';
-import { TileTextures } from './types';
-
-interface Elevations {
-    leftElevationPx: number;
-    rightElevationPx: number;
-}
+import { HALF_TILE_WIDTH, round2DCoords, WorldCoords, worldToCanvas } from '../coords';
+import { TileNeighbourhood, TileTextures } from './types';
 
 export class SimpleTile {
     constructor(
@@ -15,20 +10,23 @@ export class SimpleTile {
     renderAt(
         ctx: RenderContext,
         coords: WorldCoords,
-        { leftElevationPx, rightElevationPx }: Elevations,
+        { eastElevationPx, southElevationPx, isNorthOverhang, isWestOverhang }: TileNeighbourhood,
     ): void {
         const { left, top } = round2DCoords(worldToCanvas(coords));
 
-        this.textures.top.render(ctx, { left, top });
+        this.textures.top.render(ctx, { left, top }, {
+            leftBorder: isWestOverhang,
+            rightBorder: isNorthOverhang,
+        });
         this.textures.left.render(
             ctx,
             { left: left - HALF_TILE_WIDTH + 1, top: top + 1 },
-            { sideHeight: leftElevationPx, side: 'l' },
+            { sideHeight: southElevationPx, side: 'l' },
         );
         this.textures.right.render(
             ctx,
             { left: left + 1, top: top + 1 },
-            { sideHeight: rightElevationPx, side: 'r' },
+            { sideHeight: eastElevationPx, side: 'r' },
         );
     }
 }
