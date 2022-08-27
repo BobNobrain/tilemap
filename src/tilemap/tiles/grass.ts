@@ -1,14 +1,14 @@
 import { BROWN, GRAY, GREEN } from '../palette/samples';
+import { createTexturePalette } from '../texture';
 import { GRASS_LEFT_TXDATA, GRASS_RIGHT_TXDATA, GRASS_TOP_TXDATA } from '../textures/grass';
 import { SimpleSideTexture } from '../tile/SimpleSideTexture';
 import { SimpleTile } from '../tile/SimpleTile';
 import { SimpleTopTexture } from '../tile/SimpleTopTexture';
-import { createTextureColors } from '../tile/texture';
 import { TileTextures } from '../tile/types';
 
 const grassTileTextures: TileTextures = {
     top: new SimpleTopTexture(
-        createTextureColors({
+        createTexturePalette({
             primary: GREEN,
             secondary: BROWN,
             ternary: GRAY,
@@ -16,7 +16,7 @@ const grassTileTextures: TileTextures = {
         GRASS_TOP_TXDATA,
     ),
     left: new SimpleSideTexture(
-        createTextureColors({
+        createTexturePalette({
             primary: BROWN,
             secondary: GREEN,
             ternary: GRAY,
@@ -24,7 +24,7 @@ const grassTileTextures: TileTextures = {
         GRASS_LEFT_TXDATA,
     ),
     right: new SimpleSideTexture(
-        createTextureColors({
+        createTexturePalette({
             primary: BROWN,
             secondary: GREEN,
             ternary: GRAY,

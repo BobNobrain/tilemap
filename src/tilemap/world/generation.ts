@@ -1,6 +1,9 @@
 import { distance, WorldCoords } from '../coords';
 import { createCongruentGenerator } from '../math/random';
 import { dotProduct } from '../math/vector';
+import { WorldObject } from '../object';
+import { rock1 } from '../objects/rock1';
+import { tree1 } from '../objects/tree1';
 import type { SimpleTile } from '../tile/SimpleTile';
 import { grassTile } from '../tiles/grass';
 import { sandTile } from '../tiles/sand';
@@ -109,14 +112,40 @@ class TileTypeGenerator {
     }
 }
 
+class ObjectGenerator {
+    private rnd = createCongruentGenerator({
+        nDimensions: 2,
+    });
+
+    private readonly objects = [
+        rock1,
+        tree1,
+    ];
+    private cache = new MemoizedByCoords<WorldObject | null>(
+        (at) => {
+            const r = this.rnd([at.x, at.z], { low: 0, high: this.objects.length * 20 });
+            if (r > this.objects.length) {
+                return null;
+            }
+            return this.objects[Math.floor(r)];
+        },
+    )
+
+    public generateObject(at: Readonly<WorldCoords>): WorldObject | null {
+        return this.cache.get(at);
+    }
+}
+
 export interface WorldTile {
     tile: SimpleTile;
     position: Readonly<WorldCoords>;
+    objects: WorldObject[];
 }
 
 export class WorldGenerator {
     private elevationGenerator = new ElevationGenerator();
     private tileTypeGenerator = new TileTypeGenerator();
+    private objectGenerator = new ObjectGenerator();
 
     public generateElevation(at: Readonly<WorldCoords>): number {
         return this.elevationGenerator.generateElevation(at);
@@ -126,12 +155,21 @@ export class WorldGenerator {
         const elevation = this.elevationGenerator.generateElevation(at);
         const tileType = this.tileTypeGenerator.generateTileType(at, elevation);
 
+        const objects: WorldObject[] = [];
+        if (tileType !== waterTile) {
+            const obj = this.objectGenerator.generateObject(at);
+            if (obj) {
+                objects.push(obj);
+            }
+        }
+
         return {
             tile: tileType,
             position: {
                 ...at,
                 y: elevation,
             },
+            objects,
         };
     }
 }

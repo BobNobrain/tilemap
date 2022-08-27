@@ -13,9 +13,9 @@ connectToDom({
             bottomRight: { top: h2 - 10, left: w2 - 10 },
         };
 
-        const tiles = world.getTilesToRender(viewport);
-        for (const t of tiles) {
-            t.tile.renderAt(ui.ctx, t.position, t.neighbours);
+        const renderTasks = world.getTilesToRender(viewport);
+        for (const t of renderTasks) {
+            t(ui.ctx);
         }
 
         ui.ctxRaw.strokeStyle = 'red';

@@ -1,11 +1,7 @@
 import { RenderContext } from '../../ui/ctx';
-import { TextureColors, TopTexture, TopTextureRenderOptions } from './types';
-import {
-    P0, P1, P2, P3, P4, P5, P6,
-    S0, S1, S2, S3, S4, S5, S6,
-} from './constants';
+import { TopTexture, TopTextureRenderOptions } from './types';
 import { Coords2D } from '../coords';
-import { createColorsTranslationMap, darker, lighter, renderColors } from './texture';
+import { createColorsTranslationMap, darker, lighter, TexturePalette } from '../texture';
 
 type Coord = [x: number, y: number]
 
@@ -33,7 +29,7 @@ export class SimpleTopTexture implements TopTexture {
     private colorsMap: Record<number, string>;
 
     constructor(
-        private colors: TextureColors,
+        private colors: TexturePalette,
         private txData: number[],
     ) {
         if (txData.length !== COORDS.length) {

@@ -1,7 +1,7 @@
-import { SideTexture, SideTextureRenderOptions, TextureColors } from './types';
+import { SideTexture, SideTextureRenderOptions } from './types';
 import { RenderContext } from '../../ui/ctx';
 import { Coords2D, HALF_TILE_WIDTH } from '../coords';
-import { renderColors } from './texture';
+import { renderColors, TexturePalette } from '../texture';
 
 const OFFSETS = {
     l: [0, 1, 1, 2, 2, 3, 3, 4],
@@ -16,7 +16,7 @@ export class SimpleSideTexture implements SideTexture {
     private colors: string[];
 
     constructor(
-        colors: TextureColors,
+        colors: TexturePalette,
         data: number[],
     ) {
         if (data.length % HALF_TILE_WIDTH !== 0) {

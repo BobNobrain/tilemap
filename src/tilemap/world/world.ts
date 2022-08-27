@@ -1,3 +1,4 @@
+import { RenderContext } from '../../ui/ctx';
 import { add, EAST, getElevationDifferencePx, NORTH, SOUTH, WEST, WorldCoords } from '../coords';
 import { Rect2D } from '../coords/types';
 import { iterateWorldCoordsInViewport } from '../coords/viewport';
@@ -8,30 +9,38 @@ export interface TileRenderInfo extends WorldTile {
     neighbours: TileNeighbourhood;
 }
 
+export interface RenderTask {
+    (ctx: RenderContext): void;
+}
+
 export class World {
     private gen = new WorldGenerator();
     private tileData = new MemoizedByCoords(
         (coords) => this.gen.generateTile(coords),
     );
 
-    getTilesToRender(viewport: Rect2D): TileRenderInfo[] {
-        const result: TileRenderInfo[] = [];
+    getTilesToRender(viewport: Rect2D): RenderTask[] {
+        const result: RenderTask[] = [];
         for (let c of iterateWorldCoordsInViewport(viewport)) {
-            const { tile, position } = this.tileData.get(c);
+            const { tile, position, objects } = this.tileData.get(c);
             const southEv = this.gen.generateElevation(add(c, SOUTH));
             const eastEv = this.gen.generateElevation(add(c, EAST));
             const northEv = this.gen.generateElevation(add(c, NORTH));
             const westEv = this.gen.generateElevation(add(c, WEST));
-            result.push({
-                tile,
+            result.push((ctx) => tile.renderAt(
+                ctx,
                 position,
-                neighbours: {
+                {
                     southElevationPx: getElevationDifferencePx(position.y, southEv),
                     eastElevationPx: getElevationDifferencePx(position.y, eastEv),
                     isNorthOverhang: northEv < position.y,
                     isWestOverhang: westEv < position.y,
                 },
-            });
+            ));
+
+            for (const obj of objects) {
+                result.push((ctx) => obj.render(ctx, position));
+            }
         }
         return result;
     }

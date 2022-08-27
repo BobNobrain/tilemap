@@ -5,11 +5,11 @@ import {
     T0, T1, T2, T3, T4, T5, T6,
     WH, BL,
 } from './constants';
-import { TextureColors } from './types';
+import { TexturePalette, TxColors, TxData } from './types';
 
-export function createTextureColors(
-    partialColors: Partial<TextureColors> & Pick<TextureColors, 'primary'>,
-): TextureColors {
+export function createTexturePalette(
+    partialColors: Partial<TexturePalette> & Pick<TexturePalette, 'primary'>,
+): TexturePalette {
     return {
         primary: partialColors.primary,
         secondary: partialColors.secondary ?? partialColors.primary,
@@ -19,7 +19,7 @@ export function createTextureColors(
     };
 }
 
-export function createColorsTranslationMap(colors: TextureColors): Record<number, string> {
+export function createColorsTranslationMap(colors: TexturePalette): Record<number, string> {
     return {
         [P0]: colors.primary.darkest,
         [P1]: colors.primary.darker,
@@ -50,11 +50,17 @@ export function createColorsTranslationMap(colors: TextureColors): Record<number
     };
 }
 
-export function renderColors(colors: TextureColors, txData: number[]): string[] {
+export function renderColors(colors: TexturePalette, txData: number[]): string[] {
     const map = createColorsTranslationMap(colors);
     return txData.map((txd) => map[txd]);
 }
-
+export function renderTxColors(colors: TexturePalette, txData: TxData): TxColors {
+    return {
+        width: txData.width,
+        height: txData.height,
+        colors: renderColors(colors, txData.data),
+    };
+}
 
 const MIN_TONE_NUMBER = 0;
 const MAX_TONE_NUMBER = 6;

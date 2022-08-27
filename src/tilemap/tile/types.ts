@@ -1,20 +1,10 @@
 import { RenderContext } from '../../ui/ctx';
 import { Coords2D, WorldCoords } from '../coords';
-import type { Palette } from '../palette/types';
 
 export interface TileTextures {
     top: TopTexture;
     left: SideTexture;
     right: SideTexture;
-}
-
-export interface TextureColors {
-    primary: Palette;
-    secondary: Palette;
-    ternary: Palette;
-
-    white: string;
-    black: string;
 }
 
 export interface TileNeighbourhood {

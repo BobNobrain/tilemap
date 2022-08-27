@@ -1,24 +1,21 @@
 import { RenderContext } from '../../ui/ctx';
 import { Coords2D, round2DCoords, worldToCanvas } from '../coords';
 import { createCongruentGenerator } from '../math/random';
+import { renderColors, TexturePalette, TxDataAnimated } from '../texture';
 import { COORDS } from './SimpleTopTexture';
-import { renderColors } from './texture';
-import { TextureColors, TopTexture, TopTextureRenderOptions } from './types';
+import { TopTexture, TopTextureRenderOptions } from './types';
 
 export interface WaveTextureOptions {
     animationLengthTicks: number;
     frameDurationTicks: number;
     nWaves: number;
-    txDataFrames: number[][];
-    frameWidth: number;
-    frameHeight: number;
 }
 
 class WaveTexture {
     private frames: string[][];
 
     constructor(
-        colors: TextureColors,
+        colors: TexturePalette,
         txDataFrames: number[][],
         private frameWidth: number,
         private frameHeight: number,
@@ -55,19 +52,20 @@ export class WaveTopTexture implements TopTexture {
     });
 
     constructor(
-        colors: TextureColors,
-        { animationLengthTicks, nWaves, txDataFrames, frameWidth, frameHeight, frameDurationTicks }: WaveTextureOptions,
+        colors: TexturePalette,
+        { width, height, frames }: TxDataAnimated,
+        { animationLengthTicks, nWaves, frameDurationTicks }: WaveTextureOptions,
     ) {
         this.animationLengthTicks = animationLengthTicks;
-        this.nFrames = txDataFrames.length;
+        this.nFrames = frames.length;
         this.frameDuration = frameDurationTicks;
         this.color = colors.primary.color;
 
         this.wave = new WaveTexture(
             colors,
-            txDataFrames,
-            frameWidth,
-            frameHeight,
+            frames,
+            width,
+            height,
         );
 
         this.nWaves = nWaves;
