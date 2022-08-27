@@ -17,3 +17,18 @@ export function add(w1: Readonly<WorldCoords>, w2: Readonly<WorldCoords>): World
         z: w1.z + w2.z,
     };
 }
+
+export function div(w: Readonly<WorldCoords>, n: number): WorldCoords {
+    return {
+        x: w.x / n,
+        y: w.y / n,
+        z: w.z / n,
+    };
+}
+
+export function distance(w1: Readonly<WorldCoords>, w2: Readonly<WorldCoords>): number {
+    const dx = w1.x - w2.x;
+    const dy = w1.y - w2.y;
+    const dz = w1.z - w2.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}

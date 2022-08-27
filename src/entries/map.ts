@@ -26,7 +26,7 @@ connectToDom({
             viewport.bottomRight.top - viewport.topLeft.top,
         );
     },
-    pixelSize: 6,
+    pixelSize: 4,
     tickTimeMs: 33,
 });
 

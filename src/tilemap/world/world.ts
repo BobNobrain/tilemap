@@ -1,32 +1,27 @@
 import { add, EAST, getElevationDifferencePx, NORTH, SOUTH, WEST, WorldCoords } from '../coords';
 import { Rect2D } from '../coords/types';
 import { iterateWorldCoordsInViewport } from '../coords/viewport';
-import type { SimpleTile } from '../tile/SimpleTile';
 import { TileNeighbourhood } from '../tile/types';
-import { grassTile } from '../tiles/grass';
-import { sandTile } from '../tiles/sand';
-import { waterTile } from '../tiles/water';
-
-export interface WorldTile {
-    tile: SimpleTile;
-    position: Readonly<WorldCoords>;
-}
+import { MemoizedByCoords, WorldGenerator, WorldTile } from './generation';
 
 export interface TileRenderInfo extends WorldTile {
     neighbours: TileNeighbourhood;
 }
 
 export class World {
-    private tileData: Record<number, Record<number, WorldTile>> = {};
+    private gen = new WorldGenerator();
+    private tileData = new MemoizedByCoords(
+        (coords) => this.gen.generateTile(coords),
+    );
 
     getTilesToRender(viewport: Rect2D): TileRenderInfo[] {
         const result: TileRenderInfo[] = [];
         for (let c of iterateWorldCoordsInViewport(viewport)) {
-            const { tile, position } = this.getTileAt(c);
-            const southEv = this.getElevationAt(add(c, SOUTH));
-            const eastEv = this.getElevationAt(add(c, EAST));
-            const northEv = this.getElevationAt(add(c, NORTH));
-            const westEv = this.getElevationAt(add(c, WEST));
+            const { tile, position } = this.tileData.get(c);
+            const southEv = this.gen.generateElevation(add(c, SOUTH));
+            const eastEv = this.gen.generateElevation(add(c, EAST));
+            const northEv = this.gen.generateElevation(add(c, NORTH));
+            const westEv = this.gen.generateElevation(add(c, WEST));
             result.push({
                 tile,
                 position,
@@ -39,60 +34,5 @@ export class World {
             });
         }
         return result;
-    }
-
-    private getTileAt(coords: Readonly<WorldCoords>): WorldTile {
-        if (!this.tileData[coords.x]) {
-            this.tileData[coords.x] = {};
-        }
-        if (!this.tileData[coords.x][coords.z]) {
-            this.tileData[coords.x][coords.z] = this.generateTileAt(coords);
-        }
-
-        return this.tileData[coords.x][coords.z];
-    }
-
-    private generateTileAt(coords: WorldCoords): WorldTile {
-        if (coords.x > 2) {
-            return {
-                position: {
-                    ...coords,
-                    y: this.generateElevationAt(coords),
-                },
-                tile: waterTile,
-            };
-        }
-
-        if (coords.x * coords.x + coords.z * coords.z < 10) {
-            return {
-                position: {
-                    ...coords,
-                    y: this.generateElevationAt(coords),
-                },
-                tile: sandTile,
-            };
-        }
-
-        return {
-            position: {
-                ...coords,
-                y: this.generateElevationAt(coords),
-            },
-            tile: grassTile,
-        };
-    }
-
-    private generateElevationAt(coords: Readonly<WorldCoords>): number {
-        if (coords.x > 2) {
-            return 0;
-        }
-        return Math.random();
-    }
-    private getElevationAt(coords: Readonly<WorldCoords>): number {
-        const memo = this.tileData[coords.x]?.[coords.z]?.position.y;
-        if (memo === undefined) {
-            return this.getTileAt(coords).position.y;
-        }
-        return memo;
     }
 }

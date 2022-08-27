@@ -8,4 +8,4 @@ export {
 export { canvasToWorld, worldToCanvas } from './convert';
 export type { Coords2D, Rect2D, WorldCoords } from './types';
 export { iterateWorldCoordsInViewport } from './viewport';
-export { add, ceilWorldCoords, floorWorldCoords, roundWorldCoords } from './world';
+export { add, ceilWorldCoords, distance, div, floorWorldCoords, roundWorldCoords } from './world';

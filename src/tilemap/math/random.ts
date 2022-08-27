@@ -12,7 +12,7 @@ export interface CongruentGeneratorOptions {
     outputScale?: number;
 }
 
-const rnd = () => (Math.random() + 0.2) * Math.sign(Math.random() - 0.5);
+const rnd = () => (Math.random() / 4 + 0.75);
 
 export function createCongruentGenerator({
     nDimensions,
