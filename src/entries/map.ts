@@ -6,11 +6,11 @@ const world = new World();
 
 connectToDom({
     render(ui) {
-        const w4 = Math.floor(ui.ctx.width / 4);
-        const h4 = Math.floor(ui.ctx.height / 4);
+        const w2 = Math.floor(ui.ctx.width / 2);
+        const h2 = Math.floor(ui.ctx.height / 2);
         const viewport: Rect2D = {
-            topLeft: { top: -h4, left: -w4 },
-            bottomRight: { top: h4, left: w4 },
+            topLeft: { top: -h2 + 10, left: -w2 + 10 },
+            bottomRight: { top: h2 - 10, left: w2 - 10 },
         };
 
         const tiles = world.getTilesToRender(viewport);

@@ -51,6 +51,7 @@ export class WaveTopTexture implements TopTexture {
 
     private rnd = createCongruentGenerator({
         nDimensions: 3, // x, z and #wave
+        outputScale: 100000,
     });
 
     constructor(
