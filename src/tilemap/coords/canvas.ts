@@ -15,3 +15,10 @@ export function getElevationDifferencePx(topY: number, bottomY: number): number 
 
     return Math.ceil((topY - bottomY) * TILE_ELEVATION_PX);
 }
+
+export function add(c1: Readonly<Coords2D>, c2: Readonly<Coords2D>): Coords2D {
+    return {
+        left: c1.left + c2.left,
+        top: c1.top + c2.top,
+    };
+}

@@ -5,6 +5,7 @@ import { connectToDom } from '../ui/dom';
 
 connectToDom({
     pixelSize: 8,
+    tickTimeMs: 33,
     render(ui) {
         grassTile.renderAt(ui.ctx, WORLD_ZERO, {
             southElevationPx: 4,

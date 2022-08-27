@@ -1,14 +1,15 @@
 import { RenderContext } from '../../ui/ctx';
-import { TextureColors } from './types';
+import { TextureColors, TopTexture, TopTextureRenderOptions } from './types';
 import {
     P0, P1, P2, P3, P4, P5, P6,
     S0, S1, S2, S3, S4, S5, S6,
 } from './constants';
 import { Coords2D } from '../coords';
+import { createColorsTranslationMap, darker, lighter, renderColors } from './texture';
 
 type Coord = [x: number, y: number]
 
-const COORDS: Coord[] = [
+export const COORDS: Coord[] = [
     [0, -4], [1, -4],
     [-2, -3], [-1, -3], [0, -3], [1, -3], [2, -3], [3, -3],
     [-4, -2], [-3, -2], [-2, -2], [-1, -2], [0, -2], [1, -2], [2, -2], [3, -2], [4, -2], [5, -2],
@@ -28,46 +29,18 @@ const borderTypesByIndex: Record<number, 'l' | 'r' | undefined> = {
     32: 'l', 47: 'r',
 };
 
-export interface TopTextureRenderOptions {
-    leftBorder: boolean;
-    rightBorder: boolean;
-}
-
-export class TopTexture {
-    private colors: string[];
-    private borderColors: Record<'l' | 'r', string>;
+export class SimpleTopTexture implements TopTexture {
+    private colorsMap: Record<number, string>;
 
     constructor(
-        colors: TextureColors,
-        data: number[],
+        private colors: TextureColors,
+        private txData: number[],
     ) {
-        if (data.length !== COORDS.length) {
+        if (txData.length !== COORDS.length) {
             throw new Error('Invalid texture data length');
         }
 
-        const repMap: Record<number, string> = {
-            [P0]: colors.primary.darkest,
-            [P1]: colors.primary.darker,
-            [P2]: colors.primary.dark,
-            [P3]: colors.primary.color,
-            [P4]: colors.primary.light,
-            [P5]: colors.primary.lighter,
-            [P6]: colors.primary.lightest,
-
-            [S0]: colors.secondary.darkest,
-            [S1]: colors.secondary.darker,
-            [S2]: colors.secondary.dark,
-            [S3]: colors.secondary.color,
-            [S4]: colors.secondary.light,
-            [S5]: colors.secondary.lighter,
-            [S6]: colors.secondary.lightest,
-        };
-
-        this.colors = data.map((n) => repMap[n]);
-        this.borderColors = {
-            l: colors.primary.light,
-            r: colors.primary.dark,
-        };
+        this.colorsMap = createColorsTranslationMap(colors);
     }
 
     render(
@@ -75,16 +48,20 @@ export class TopTexture {
         { left, top }: Coords2D,
         { leftBorder, rightBorder }: TopTextureRenderOptions,
     ): void {
-        for (let i = 0; i < this.colors.length; i++) {
-            let color = this.colors[i];
+        for (let i = 0; i < this.txData.length; i++) {
+            let txd = this.txData[i];
             const offset = COORDS[i];
             const borderType = borderTypesByIndex[i];
-            if (borderType && (borderType === 'l' && leftBorder || borderType == 'r' && rightBorder)) {
-                color = this.borderColors[borderType];
+            if (borderType) {
+                if (borderType === 'l' && leftBorder) {
+                    txd = lighter(txd);
+                } else if (borderType == 'r' && rightBorder) {
+                    txd = darker(txd);
+                }
             }
 
             ctx.putPixel(
-                color,
+                this.colorsMap[txd],
                 left + offset[0],
                 top + offset[1],
             );

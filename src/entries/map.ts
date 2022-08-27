@@ -27,5 +27,6 @@ connectToDom({
         );
     },
     pixelSize: 6,
+    tickTimeMs: 33,
 });
 

@@ -17,6 +17,7 @@ export class SimpleTile {
         this.textures.top.render(ctx, { left, top }, {
             leftBorder: isWestOverhang,
             rightBorder: isNorthOverhang,
+            worldPosition: coords,
         });
         this.textures.left.render(
             ctx,

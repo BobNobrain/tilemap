@@ -8,11 +8,13 @@ export interface PageUI {
 
 export interface ConnectToDomOptions {
     pixelSize: number;
+    tickTimeMs: number;
     render: (ui: PageUI) => void;
 }
 
 export function connectToDom({
     pixelSize,
+    tickTimeMs,
     render,
 }: ConnectToDomOptions): PageUI {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -45,7 +47,7 @@ export function connectToDom({
         render(ui);
     });
 
-    const onResize = () => {
+    const onFrameTick = () => {
         const { width, height } = body.getBoundingClientRect();
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
@@ -57,11 +59,12 @@ export function connectToDom({
             ctxRaw.resetTransform();
             ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
             ctxRaw.scale(pixelSize, pixelSize);
-
-            requestAnimationFrame(repaint);
         }
+
+        ++ui.ctx.tick;
+        requestAnimationFrame(repaint);
     };
-    window.addEventListener('resize', onResize);
+    window.setInterval(onFrameTick, tickTimeMs);
 
     return ui;
 }

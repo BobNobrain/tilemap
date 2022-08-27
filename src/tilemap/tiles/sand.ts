@@ -1,33 +1,32 @@
 import { BROWN, GRAY, ORANGE } from '../palette/samples';
 import { GRASS_LEFT_TXDATA, GRASS_RIGHT_TXDATA, GRASS_TOP_TXDATA } from '../textures/grass';
-import { SideTexture } from '../tile/SideTexture';
+import { SimpleSideTexture } from '../tile/SimpleSideTexture';
 import { SimpleTile } from '../tile/SimpleTile';
-import { TopTexture } from '../tile/TopSideTexture';
+import { SimpleTopTexture } from '../tile/SimpleTopTexture';
+import { createTextureColors } from '../tile/texture';
 import { TileTextures } from '../tile/types';
 
 const sandTileTextures: TileTextures = {
-    top: new TopTexture(
-        {
+    top: new SimpleTopTexture(
+        createTextureColors({
             primary: ORANGE,
             secondary: BROWN,
             ternary: GRAY,
-        },
+        }),
         GRASS_TOP_TXDATA,
     ),
-    left: new SideTexture(
-        {
+    left: new SimpleSideTexture(
+        createTextureColors({
             primary: ORANGE,
-            secondary: ORANGE,
             ternary: GRAY,
-        },
+        }),
         GRASS_LEFT_TXDATA,
     ),
-    right: new SideTexture(
-        {
+    right: new SimpleSideTexture(
+        createTextureColors({
             primary: ORANGE,
-            secondary: ORANGE,
             ternary: GRAY,
-        },
+        }),
         GRASS_RIGHT_TXDATA,
     ),
 };

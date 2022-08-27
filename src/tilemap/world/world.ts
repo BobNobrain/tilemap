@@ -5,6 +5,7 @@ import type { SimpleTile } from '../tile/SimpleTile';
 import { TileNeighbourhood } from '../tile/types';
 import { grassTile } from '../tiles/grass';
 import { sandTile } from '../tiles/sand';
+import { waterTile } from '../tiles/water';
 
 export interface WorldTile {
     tile: SimpleTile;
@@ -52,6 +53,16 @@ export class World {
     }
 
     private generateTileAt(coords: WorldCoords): WorldTile {
+        if (coords.x > 2) {
+            return {
+                position: {
+                    ...coords,
+                    y: this.generateElevationAt(coords),
+                },
+                tile: waterTile,
+            };
+        }
+
         if (coords.x * coords.x + coords.z * coords.z < 10) {
             return {
                 position: {
@@ -72,6 +83,9 @@ export class World {
     }
 
     private generateElevationAt(coords: Readonly<WorldCoords>): number {
+        if (coords.x > 2) {
+            return 0;
+        }
         return Math.random();
     }
     private getElevationAt(coords: Readonly<WorldCoords>): number {
