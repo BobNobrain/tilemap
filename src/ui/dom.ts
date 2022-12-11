@@ -47,24 +47,26 @@ export function connectToDom({
         render(ui);
     });
 
-    const onFrameTick = () => {
-        const { width, height } = body.getBoundingClientRect();
-        if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
+    if (tickTimeMs > 0) {
+        const onFrameTick = () => {
+            const { width, height } = body.getBoundingClientRect();
+            if (canvas.width !== width || canvas.height !== height) {
+                canvas.width = width;
+                canvas.height = height;
 
-            ui.ctx.width = Math.ceil(width / pixelSize);
-            ui.ctx.height = Math.ceil(height / pixelSize);
+                ui.ctx.width = Math.ceil(width / pixelSize);
+                ui.ctx.height = Math.ceil(height / pixelSize);
 
-            ctxRaw.resetTransform();
-            ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
-            ctxRaw.scale(pixelSize, pixelSize);
-        }
+                ctxRaw.resetTransform();
+                ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
+                ctxRaw.scale(pixelSize, pixelSize);
+            }
 
-        ++ui.ctx.tick;
-        requestAnimationFrame(repaint);
-    };
-    window.setInterval(onFrameTick, tickTimeMs);
+            ++ui.ctx.tick;
+            requestAnimationFrame(repaint);
+        };
+        window.setInterval(onFrameTick, tickTimeMs);
+    }
 
     return ui;
 }

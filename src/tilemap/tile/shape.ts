@@ -66,6 +66,6 @@ interface Dimensions2D {
     width: number;
     height: number;
 }
-export function getRandomRectLocationInTile(dims: Dimensions2D): Coords2D {
-    // TODO
-}
+// export function getRandomRectLocationInTile(dims: Dimensions2D): Coords2D {
+//     // TODO
+// }
