@@ -4,7 +4,7 @@ import { connectToDom } from '../ui/dom';
 
 const gen = new NoiseGenerator({
     seed: '1337',
-    octaves: 1,
+    octaves: 3,
     gridSize: 20,
     min: 0,
     max: 255,
