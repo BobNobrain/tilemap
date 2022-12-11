@@ -1,6 +1,7 @@
 import { WorldCoords } from '../../coords';
 import { RandomNumberGenerator } from '../rng';
 import type { NoiseLayer } from './layer';
+import { RandomizedSquareLayer } from './rnd-square';
 import { SquareLayer } from './square';
 
 export interface NoiseGeneratorConfig {
@@ -53,7 +54,7 @@ export class NoiseGenerator {
         let size = gridSize;
         for (let i = 0; i < octaves; i++) {
             const amplitude = amplitudes[i] / amplSum;
-            this.layers.push(new SquareLayer({
+            this.layers.push(new RandomizedSquareLayer({
                 rng: this.rng,
                 gridSize: size,
                 amplitude,
