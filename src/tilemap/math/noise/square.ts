@@ -64,7 +64,7 @@ export class SquareLayer extends NoiseLayer {
         return ringOffset + posInRing;
     }
 
-    protected getMaxDistanceToGripPoint(): number {
+    protected getMaxDistanceToGridPoint(): number {
         return this.maxD;
     }
 }

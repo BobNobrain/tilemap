@@ -2,6 +2,7 @@ import { WorldCoords } from '../../coords';
 import { RandomNumberGenerator } from '../rng';
 import type { NoiseLayer } from './layer';
 import { SquareLayer } from './square';
+import { TriangularLayer } from './triangle';
 
 export interface NoiseGeneratorConfig {
     seed?: string;
@@ -16,9 +17,6 @@ export class NoiseGenerator {
     private seed: string;
     private min: number;
     private max: number;
-    // private octaves: number;
-    // private damping: number;
-    // private gridSize: number;
 
     private gridValuesCache: Record<string, number> = {};
     private rng: RandomNumberGenerator;
@@ -35,9 +33,6 @@ export class NoiseGenerator {
         this.seed = seed;
         this.min = min;
         this.max = max;
-        // this.octaves = octaves;
-        // this.damping = damping;
-        // this.gridSize = gridSize;
 
         this.rng = new RandomNumberGenerator(seed);
 
@@ -53,7 +48,7 @@ export class NoiseGenerator {
         let size = gridSize;
         for (let i = 0; i < octaves; i++) {
             const amplitude = amplitudes[i] / amplSum;
-            this.layers.push(new SquareLayer({
+            this.layers.push(new TriangularLayer({
                 rng: this.rng,
                 gridSize: size,
                 amplitude,
@@ -76,21 +71,5 @@ export class NoiseGenerator {
             result += l.generateAt(coords);
         }
         return Math.floor(this.min + (this.max - this.min) * result);
-
-        // const scaled = div(coords, this.gridSize);
-        // const grid = this.getNearestGridPoints(scaled);
-        // let sum = 0;
-        // let denom = 0;
-        // const maxD = Math.SQRT2;
-        // for (const gp of grid) {
-        //     const d = distance(scaled, gp);
-        //     if (d > maxD) {
-        //         continue;
-        //     }
-        //     const value = this.getRndForGridPoint(gp);
-        //     sum += value * (maxD - d);
-        //     denom += maxD - d;
-        // }
-        // return sum / denom;
     }
 }
