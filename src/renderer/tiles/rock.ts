@@ -1,15 +1,15 @@
-import { BLUE, GRAY } from '../palette/samples';
-import { createTexturePalette } from '../texture';
+import { GRAY } from '../palette/samples';
+import { createTexturePalette } from '../../renderer/texture';
 import { GRASS_LEFT_TXDATA, GRASS_RIGHT_TXDATA, GRASS_TOP_TXDATA } from '../textures/grass';
 import { SimpleSideTexture } from '../tile/SimpleSideTexture';
 import { SimpleTile } from '../tile/SimpleTile';
 import { SimpleTopTexture } from '../tile/SimpleTopTexture';
 import { TileTextures } from '../tile/types';
 
-const icyRockTileTextures: TileTextures = {
+const rockTileTextures: TileTextures = {
     top: new SimpleTopTexture(
         createTexturePalette({
-            primary: BLUE,
+            primary: GRAY,
             secondary: GRAY,
             ternary: GRAY,
         }),
@@ -17,7 +17,7 @@ const icyRockTileTextures: TileTextures = {
     ),
     left: new SimpleSideTexture(
         createTexturePalette({
-            primary: BLUE,
+            primary: GRAY,
             secondary: GRAY,
             ternary: GRAY,
         }),
@@ -25,7 +25,7 @@ const icyRockTileTextures: TileTextures = {
     ),
     right: new SimpleSideTexture(
         createTexturePalette({
-            primary: BLUE,
+            primary: GRAY,
             secondary: GRAY,
             ternary: GRAY,
         }),
@@ -33,4 +33,4 @@ const icyRockTileTextures: TileTextures = {
     ),
 };
 
-export const icyRockTile = new SimpleTile(icyRockTileTextures);
+export const rockTile = new SimpleTile(rockTileTextures);

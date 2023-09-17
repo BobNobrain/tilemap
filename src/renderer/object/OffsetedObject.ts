@@ -1,8 +1,9 @@
 import { RenderContext } from '../../ui/ctx';
-import { CANVAS_ZERO, HALF_TILE_HEIGHT, HALF_TILE_WIDTH, Rect2D, WorldCoords, worldToCanvas } from '../coords';
-import { CongruentGenerator, createCongruentGenerator } from '../math/random';
-import { TexturePalette, TxData } from '../texture';
-import { TransparentTexture } from '../texture/TransparentTexture';
+import { WorldCoords } from '../../lib/coords';
+import { CANVAS_ZERO, HALF_TILE_HEIGHT, HALF_TILE_WIDTH, worldToCanvas } from '../coords';
+import { CongruentGenerator, createCongruentGenerator } from '../../lib/math/random';
+import { TexturePalette, TxData } from '../../renderer/texture';
+import { TransparentTexture } from '../../renderer/texture/TransparentTexture';
 import { WorldObject } from './types';
 
 export class OffsetedObject implements WorldObject {

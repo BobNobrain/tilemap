@@ -1,5 +1,5 @@
-import { Coords2D, Rect2D } from '../tilemap/coords';
-import { World } from '../tilemap/world/world';
+import { Coords2D, Rect2D } from '../renderer/coords';
+import { World } from '../world/world';
 import { connectToDom } from '../ui/dom';
 
 const seed = new URLSearchParams(document.location.search.substring(1)).get('seed') ?? 'deadmouse';

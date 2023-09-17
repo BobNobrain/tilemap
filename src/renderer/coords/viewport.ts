@@ -1,6 +1,6 @@
-import { canvasToWorld } from '.';
-import { Rect2D, WorldCoords } from './types';
-import { ceilWorldCoords, floorWorldCoords } from './world';
+import { ceilWorldCoords, floorWorldCoords, WorldCoords } from '../../lib/coords';
+import { canvasToWorld } from './convert';
+import { Rect2D } from './types';
 
 export function* iterateWorldCoordsInViewport(viewport: Readonly<Rect2D>): Generator<WorldCoords> {
     const start = floorWorldCoords(canvasToWorld(viewport.topLeft, 0));

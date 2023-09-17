@@ -1,5 +1,5 @@
-import { TILE_ELEVATION_PX, TILE_HEIGHT_PX, TILE_WIDTH_PX } from './constants';
-import type { Coords2D, Rect2D, WorldCoords } from './types';
+import { TILE_ELEVATION_PX } from './constants';
+import type { Coords2D } from './types';
 
 export function round2DCoords(canvas: Readonly<Coords2D>): Coords2D {
     return { left: Math.round(canvas.left), top: Math.round(canvas.top) };

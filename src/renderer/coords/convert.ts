@@ -1,5 +1,6 @@
+import { WorldCoords } from '../../lib/coords/types';
 import { HALF_TILE_HEIGHT, HALF_TILE_WIDTH, TILE_ELEVATION_PX, TILE_HEIGHT_PX } from './constants';
-import { Coords2D, WorldCoords } from './types';
+import { Coords2D } from './types';
 
 const HEIGHT_TO_WIDTH_RATIO = HALF_TILE_HEIGHT / HALF_TILE_WIDTH;
 

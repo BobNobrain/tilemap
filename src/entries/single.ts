@@ -1,6 +1,6 @@
-import { WorldCoords, WORLD_ZERO } from '../tilemap/coords';
-import { grassTile } from '../tilemap/tiles/grass';
-import { sandTile } from '../tilemap/tiles/sand';
+import { WorldCoords, WORLD_ZERO } from '../lib/coords';
+import { grassTile } from '../renderer/tiles/grass';
+import { sandTile } from '../renderer/tiles/sand';
 import { connectToDom } from '../ui/dom';
 
 connectToDom({

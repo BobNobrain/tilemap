@@ -1,5 +1,6 @@
 import { RenderContext } from '../../ui/ctx';
-import { Coords2D, WorldCoords } from '../coords';
+import { WorldCoords } from '../../lib/coords';
+import { Coords2D } from '../coords';
 
 export interface TileTextures {
     top: TopTexture;

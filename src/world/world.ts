@@ -1,9 +1,9 @@
-import { RenderContext } from '../../ui/ctx';
-import { add, EAST, getElevationDifferencePx, NORTH, SOUTH, WEST, WorldCoords } from '../coords';
-import { Coords2D, Rect2D } from '../coords/types';
-import { iterateWorldCoordsInViewport } from '../coords/viewport';
-import { TileNeighbourhood } from '../tile/types';
+import { RenderContext } from '../ui/ctx';
+import { add, EAST, NORTH, SOUTH, WEST } from '../lib/coords';
+import { iterateWorldCoordsInViewport } from '../renderer/coords/viewport';
+import { TileNeighbourhood } from '../renderer/tile/types';
 import { WorldGenerator, WorldTile } from './generation';
+import { getElevationDifferencePx, Rect2D } from '../renderer/coords';
 
 export interface TileRenderInfo extends WorldTile {
     neighbours: TileNeighbourhood;

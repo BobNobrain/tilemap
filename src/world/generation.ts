@@ -1,12 +1,12 @@
-import { Coords2D, Rect2D, WorldCoords } from '../coords';
-import { NoiseGenerator } from '../math/noise';
-import { WorldObject } from '../object';
-// import { AsteroidTile } from '../tile/AsteroidTile';
-import { Tile } from '../tile/types';
-import {icyRockTile} from '../tiles/icy';
-import {purpleRockTile} from '../tiles/purple';
-import { rockTile } from '../tiles/rock';
-import { voidTile } from '../tiles/void';
+import { WorldCoords } from '../lib/coords';
+import { NoiseGenerator } from '../lib/math/noise';
+import { Coords2D, Rect2D } from '../renderer/coords';
+import { WorldObject } from '../renderer/object';
+import { Tile } from '../renderer/tile/types';
+import { icyRockTile } from '../renderer/tiles/icy';
+import { purpleRockTile } from '../renderer/tiles/purple';
+import { rockTile } from '../renderer/tiles/rock';
+import { voidTile } from '../renderer/tiles/void';
 
 const HEIGHT_PRECISION = 10;
 const EMPTINESS_HEIGHT_BOUNDARY = 6;

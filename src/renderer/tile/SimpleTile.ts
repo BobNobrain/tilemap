@@ -1,5 +1,6 @@
+import { WorldCoords } from '../../lib/coords';
 import { RenderContext } from '../../ui/ctx';
-import { HALF_TILE_WIDTH, round2DCoords, WorldCoords, worldToCanvas } from '../coords';
+import { HALF_TILE_WIDTH, round2DCoords, worldToCanvas } from '../coords';
 import { Tile, TileNeighbourhood, TileTextures } from './types';
 
 export class SimpleTile implements Tile {

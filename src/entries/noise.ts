@@ -1,5 +1,5 @@
-import { WorldCoords } from '../tilemap/coords';
-import { NoiseGenerator } from '../tilemap/math/noise';
+import { WorldCoords } from '../lib/coords';
+import { NoiseGenerator } from '../lib/math/noise';
 import { connectToDom } from '../ui/dom';
 
 const gen = new NoiseGenerator({
