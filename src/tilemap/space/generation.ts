@@ -1,14 +1,16 @@
 import { Coords2D, Rect2D, WorldCoords } from '../coords';
 import { NoiseGenerator } from '../math/noise';
-import {RandomNumberGenerator} from '../math/rng';
 import { WorldObject } from '../object';
-import {AsteroidTile} from '../tile/AsteroidTile';
+// import { AsteroidTile } from '../tile/AsteroidTile';
 import { Tile } from '../tile/types';
+import {icyRockTile} from '../tiles/icy';
+import {purpleRockTile} from '../tiles/purple';
 import { rockTile } from '../tiles/rock';
 import { voidTile } from '../tiles/void';
 
-// elevation, -7..7
-const EMPTINESS_ELEVATION_BOUNDARY = 0.7;
+const HEIGHT_PRECISION = 10;
+const EMPTINESS_HEIGHT_BOUNDARY = 6;
+const ROCKS_HEIGHT_SPAN = HEIGHT_PRECISION - EMPTINESS_HEIGHT_BOUNDARY;
 
 class ElevationGenerator {
     private noise: NoiseGenerator;
@@ -19,38 +21,51 @@ class ElevationGenerator {
             octaves: 3,
             gridSize: 16,
             min: 0,
-            max: 255,
+            max: HEIGHT_PRECISION,
         });
     }
 
     public generateElevation(coords: Readonly<WorldCoords>): number {
         const n = this.noise.generateAt(coords);
-        const elevation = n / 255;
-        if (elevation <= EMPTINESS_ELEVATION_BOUNDARY) {
-            return -1;
+        if (n <= EMPTINESS_HEIGHT_BOUNDARY) {
+            return 0;
         }
-        return (elevation - EMPTINESS_ELEVATION_BOUNDARY) / 0.3;
+
+        const height = n - EMPTINESS_HEIGHT_BOUNDARY;
+        return height / ROCKS_HEIGHT_SPAN + 1;
     }
 }
 
 class TileTypeGenerator {
     private cache: Record<string, Tile> = {};
-    private rng: RandomNumberGenerator;
+    private temperatureNoise: NoiseGenerator;
 
     constructor(seed: string) {
-        this.rng = new RandomNumberGenerator(seed);
+        this.temperatureNoise = new NoiseGenerator({
+            seed,
+            octaves: 2,
+            gridSize: 32,
+            min: 0,
+            max: 3
+        });
     }
 
     public generateTileType(coords: Readonly<WorldCoords>, elevation: number): Tile {
-        if (elevation === -1) {
+        if (elevation === 0) {
             return voidTile;
         }
 
-        const cacheKey = `${coords.x}:${coords.z}`;
-        if (!this.cache[cacheKey]) {
-            this.cache[cacheKey] = new AsteroidTile(coords, this.rng);
+        const biome = this.temperatureNoise.generateAt(coords);
+
+        if (biome === 0) {
+            return icyRockTile;
         }
-        return this.cache[cacheKey];
+
+        if (biome === 1) {
+            return rockTile;
+        }
+
+        return purpleRockTile;
     }
 }
 

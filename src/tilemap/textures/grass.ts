@@ -25,6 +25,10 @@ export const GRASS_LEFT_TXDATA: number[] = [
     P4, P3, P3, P3, P3, P4, P3, P3,
     P3, P3, P4, P3, P3, P3, P3, P3,
     P3, P3, P3, P3, P3, P3, P3, P3,
+    P3, P3, P3, P3, P3, P3, P3, P3,
+    P3, P3, P3, P3, P3, P3, P3, P3,
+    P3, P3, P3, P3, P3, P3, P3, P3,
+    P3, P3, P3, P3, P3, P3, P3, P3,
 ];
 
 export const GRASS_RIGHT_TXDATA: number[] = [
@@ -36,5 +40,9 @@ export const GRASS_RIGHT_TXDATA: number[] = [
     P1, P1, P1, P1, P1, P1, P1, P1,
     P0, P0, P1, P0, P0, P0, P0, P0,
     P0, P0, P0, P0, P0, P1, P0, P0,
+    P0, P0, P0, P0, P0, P0, P0, P0,
+    P0, P0, P0, P0, P0, P0, P0, P0,
+    P0, P0, P0, P0, P0, P0, P0, P0,
+    P0, P0, P0, P0, P0, P0, P0, P0,
     P0, P0, P0, P0, P0, P0, P0, P0,
 ];
