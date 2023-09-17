@@ -30,3 +30,7 @@ export interface SideTextureRenderOptions {
 export interface SideTexture {
     render(ctx: RenderContext, where: Coords2D, opts: SideTextureRenderOptions): void;
 }
+
+export interface Tile {
+    renderAt(ctx: RenderContext, coords: WorldCoords, nbh: TileNeighbourhood): void
+}

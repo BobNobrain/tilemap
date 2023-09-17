@@ -3,7 +3,7 @@ import { NoiseGenerator } from '../tilemap/math/noise';
 import { connectToDom } from '../ui/dom';
 
 const gen = new NoiseGenerator({
-    seed: '1337',
+    seed: new URLSearchParams(document.location.search.substring(1)).get('seed') ?? 'deadmouse',
     octaves: 3,
     gridSize: 32,
     min: 0,

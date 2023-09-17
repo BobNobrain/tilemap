@@ -9,6 +9,7 @@ const config = {
         single: './src/entries/single.ts',
         map: './src/entries/map.ts',
         noise: './src/entries/noise.ts',
+        space: './src/entries/space.ts',
     },
     module: {
         rules: [
@@ -30,17 +31,22 @@ const config = {
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'single.html',
-            excludeChunks: ['map', 'noise'],
+            excludeChunks: ['map', 'noise', 'space'],
         }),
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'map.html',
-            excludeChunks: ['single', 'noise'],
+            excludeChunks: ['single', 'noise', 'space'],
         }),
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'noise.html',
-            excludeChunks: ['single', 'map'],
+            excludeChunks: ['single', 'map', 'space'],
+        }),
+        new HtmlWebpackPlugin({
+            template: './html/index.html',
+            filename: 'space.html',
+            excludeChunks: ['single', 'noise', 'map'],
         }),
     ],
     optimization: {

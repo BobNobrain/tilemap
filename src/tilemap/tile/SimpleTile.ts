@@ -1,8 +1,8 @@
 import { RenderContext } from '../../ui/ctx';
 import { HALF_TILE_WIDTH, round2DCoords, WorldCoords, worldToCanvas } from '../coords';
-import { TileNeighbourhood, TileTextures } from './types';
+import { Tile, TileNeighbourhood, TileTextures } from './types';
 
-export class SimpleTile {
+export class SimpleTile implements Tile {
     constructor(
         private textures: TileTextures,
     ) {}
