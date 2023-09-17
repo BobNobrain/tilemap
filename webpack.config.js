@@ -7,7 +7,6 @@ const config = {
     mode: 'development',
     entry: {
         single: './src/entries/single.ts',
-        map: './src/entries/map.ts',
         noise: './src/entries/noise.ts',
         space: './src/entries/space.ts',
     },
@@ -31,22 +30,17 @@ const config = {
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'single.html',
-            excludeChunks: ['map', 'noise', 'space'],
-        }),
-        new HtmlWebpackPlugin({
-            template: './html/index.html',
-            filename: 'map.html',
-            excludeChunks: ['single', 'noise', 'space'],
+            excludeChunks: ['noise', 'space'],
         }),
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'noise.html',
-            excludeChunks: ['single', 'map', 'space'],
+            excludeChunks: ['single', 'space'],
         }),
         new HtmlWebpackPlugin({
             template: './html/index.html',
             filename: 'space.html',
-            excludeChunks: ['single', 'noise', 'map'],
+            excludeChunks: ['single', 'noise'],
         }),
     ],
     optimization: {

@@ -1,151 +1,121 @@
-import { distance, WorldCoords } from '../coords';
-import { createCongruentGenerator } from '../math/random';
-import { dotProduct } from '../math/vector';
+import { Coords2D, Rect2D, WorldCoords } from '../coords';
+import { NoiseGenerator } from '../math/noise';
 import { WorldObject } from '../object';
-import { rock1 } from '../objects/rock1';
-import { tree1 } from '../objects/tree1';
-import type { SimpleTile } from '../tile/SimpleTile';
-import { grassTile } from '../tiles/grass';
-import { sandTile } from '../tiles/sand';
-import { waterTile } from '../tiles/water';
+// import { AsteroidTile } from '../tile/AsteroidTile';
+import { Tile } from '../tile/types';
+import {icyRockTile} from '../tiles/icy';
+import {purpleRockTile} from '../tiles/purple';
+import { rockTile } from '../tiles/rock';
+import { voidTile } from '../tiles/void';
 
-export class MemoizedByCoords<T> {
-    private data: Record<string, T> = {};
-
-    constructor(
-        private f: (coords: Readonly<WorldCoords>) => T,
-    ) {}
-
-    get(c: Readonly<WorldCoords>): T {
-        const xi = Math.floor(c.x);
-        const zi = Math.floor(c.z);
-        const s = [xi, zi].join(':');
-
-        if (!this.data[s]) {
-            this.data[s] = this.f(c);
-        }
-        return this.data[s];
-    }
-}
+const HEIGHT_PRECISION = 10;
+const EMPTINESS_HEIGHT_BOUNDARY = 6;
+const ROCKS_HEIGHT_SPAN = HEIGHT_PRECISION - EMPTINESS_HEIGHT_BOUNDARY;
 
 class ElevationGenerator {
-    private readonly GRID_SIZE = 3;
-    private rnd = createCongruentGenerator({
-        nDimensions: 2, // x and z
-        outputScale: 7834,
-    });
+    private noise: NoiseGenerator;
 
-    private gridHeights = new MemoizedByCoords<number>(
-        (coords) => this.rnd([coords.x, coords.z], { low: -0.2, high: 1 }),
-    );
+    constructor(seed: string) {
+        this.noise = new NoiseGenerator({
+            seed,
+            octaves: 3,
+            gridSize: 16,
+            min: 0,
+            max: HEIGHT_PRECISION,
+        });
+    }
 
-    // kinda perlin
     public generateElevation(coords: Readonly<WorldCoords>): number {
-        const xScaled = coords.x / this.GRID_SIZE;
-        const zScaled = coords.z / this.GRID_SIZE;
-
-        if (Number.isInteger(xScaled) && Number.isInteger(zScaled)) {
-            return Math.max(0, this.gridHeights.get({ x: xScaled, y: 0, z: zScaled }));
-        }
-
-        const closestGridPoints: WorldCoords[] = [
-            { x: Math.floor(xScaled), y: 0, z: Math.floor(zScaled) },
-            { x: Math.floor(xScaled), y: 0, z: Math.ceil(zScaled) },
-            { x: Math.ceil(xScaled), y: 0, z: Math.floor(zScaled) },
-            { x: Math.ceil(xScaled), y: 0, z: Math.ceil(zScaled) },
-        ];
-
-        const gridHeights = closestGridPoints.map((c) => this.gridHeights.get(c));
-        const distances = closestGridPoints.map((c) => distance(c, { x: xScaled, y: 0, z: zScaled }));
-        const sumDistances = dotProduct(distances, [1, 1, 1, 1]);
-        const weightedSum = dotProduct(distances, gridHeights);
-        const weightedAvg = weightedSum / sumDistances;
-        if (weightedAvg <= 0) {
+        const n = this.noise.generateAt(coords);
+        if (n <= EMPTINESS_HEIGHT_BOUNDARY) {
             return 0;
         }
-        return Math.round(weightedAvg * 4) / 4;
+
+        const height = n - EMPTINESS_HEIGHT_BOUNDARY;
+        return height / ROCKS_HEIGHT_SPAN + 1;
     }
 }
 
 class TileTypeGenerator {
-    private readonly GRID_SIZE = 4;
-    private rnd = createCongruentGenerator({
-        nDimensions: 2, // x and z
-        outputScale: 11293,
-    });
-    private availableTiles = [grassTile, sandTile];
+    private cache: Record<string, Tile> = {};
+    private temperatureNoise: NoiseGenerator;
 
-    private gridTiles = new MemoizedByCoords<SimpleTile>(
-        (coords) => {
-            const type = this.rnd([coords.x, coords.z], { low: 0, high: this.availableTiles.length });
-            return this.availableTiles[Math.floor(type)];
-        }
-    );
+    constructor(seed: string) {
+        this.temperatureNoise = new NoiseGenerator({
+            seed,
+            octaves: 2,
+            gridSize: 32,
+            min: 0,
+            max: 3
+        });
+    }
 
-    public generateTileType(coords: Readonly<WorldCoords>, elevation: number): SimpleTile {
-        if (elevation <= 0) {
-            return waterTile;
-        }
-
-        const xScaled = coords.x / this.GRID_SIZE;
-        const zScaled = coords.z / this.GRID_SIZE;
-
-        const closestGridPoints: WorldCoords[] = [
-            { x: Math.floor(xScaled), y: 0, z: Math.floor(zScaled) },
-            { x: Math.floor(xScaled), y: 0, z: Math.ceil(zScaled) },
-            { x: Math.ceil(xScaled), y: 0, z: Math.floor(zScaled) },
-            { x: Math.ceil(xScaled), y: 0, z: Math.ceil(zScaled) },
-        ];
-
-        let type = grassTile;
-        let minD = 1;
-        for (const gp of closestGridPoints) {
-            const scaled: WorldCoords = { x: xScaled, y: 0, z: zScaled };
-            const d = distance(gp, scaled);
-            if (d < minD) {
-                minD = d;
-                type = this.gridTiles.get(gp);
-            }
+    public generateTileType(coords: Readonly<WorldCoords>, elevation: number): Tile {
+        if (elevation === 0) {
+            return voidTile;
         }
 
-        return type;
+        const biome = this.temperatureNoise.generateAt(coords);
+
+        if (biome === 0) {
+            return icyRockTile;
+        }
+
+        if (biome === 1) {
+            return rockTile;
+        }
+
+        return purpleRockTile;
     }
 }
 
-class ObjectGenerator {
-    private rnd = createCongruentGenerator({
-        nDimensions: 2,
-    });
+class SkyGenerator {
+    private noise: NoiseGenerator;
+    constructor(seed: string) {
+        this.noise = new NoiseGenerator({
+            seed,
+            octaves: 2,
+            gridSize: 8,
+            min: 0,
+            max: 512,
+        });
+    }
 
-    private readonly objects = [
-        rock1,
-        tree1,
-    ];
-    private cache = new MemoizedByCoords<WorldObject | null>(
-        (at) => {
-            const r = this.rnd([at.x, at.z], { low: 0, high: this.objects.length * 20 });
-            if (r > this.objects.length) {
-                return null;
+    public getStars(viewport: Readonly<Rect2D>): Coords2D[] {
+        const leftBounds = [viewport.bottomRight.left, viewport.topLeft.left];
+        const topBounds = [viewport.bottomRight.top, viewport.topLeft.top];
+        const leftMin = Math.floor(Math.min(...leftBounds));
+        const leftMax = Math.ceil(Math.max(...leftBounds));
+        const topMin = Math.floor(Math.min(...topBounds));
+        const topMax = Math.ceil(Math.max(...topBounds));
+
+        const result: Coords2D[] = [];
+
+        for (let left = leftMin; left < leftMax; ++left) {
+            for (let top = topMin; top < topMax; ++top) {
+                const noise = this.noise.generateAt({x: left, y: 2, z: top});
+                if (noise === 256) {
+                    result.push({left, top});
+                }
             }
-            return this.objects[Math.floor(r)];
-        },
-    )
+        }
 
-    public generateObject(at: Readonly<WorldCoords>): WorldObject | null {
-        return this.cache.get(at);
+        return result;
     }
 }
 
 export interface WorldTile {
-    tile: SimpleTile;
+    tile: Tile;
     position: Readonly<WorldCoords>;
     objects: WorldObject[];
 }
 
 export class WorldGenerator {
-    private elevationGenerator = new ElevationGenerator();
-    private tileTypeGenerator = new TileTypeGenerator();
-    private objectGenerator = new ObjectGenerator();
+    private elevationGenerator = new ElevationGenerator(this.seed);
+    private tileTypeGenerator = new TileTypeGenerator(this.seed);
+    private skyGenerator = new SkyGenerator(this.seed);
+
+    constructor(public readonly seed: string) {}
 
     public generateElevation(at: Readonly<WorldCoords>): number {
         return this.elevationGenerator.generateElevation(at);
@@ -156,12 +126,6 @@ export class WorldGenerator {
         const tileType = this.tileTypeGenerator.generateTileType(at, elevation);
 
         const objects: WorldObject[] = [];
-        if (tileType !== waterTile) {
-            const obj = this.objectGenerator.generateObject(at);
-            if (obj) {
-                objects.push(obj);
-            }
-        }
 
         return {
             tile: tileType,
@@ -171,5 +135,9 @@ export class WorldGenerator {
             },
             objects,
         };
+    }
+
+    public getStars(viewport: Readonly<Rect2D>): Coords2D[] {
+        return this.skyGenerator.getStars(viewport);
     }
 }
