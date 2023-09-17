@@ -33,39 +33,35 @@ export function connectToDom({
 
     const repaint = () => render(ui);
 
-    requestAnimationFrame(() => {
+    const resizeCanvas = () => {
         const { width, height } = body.getBoundingClientRect();
-        canvas.width = width;
-        canvas.height = height;
+        if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
 
-        ui.ctx.width = Math.ceil(width / pixelSize);
-        ui.ctx.height = Math.ceil(height / pixelSize);
+            ui.ctx.width = Math.ceil(width / pixelSize);
+            ui.ctx.height = Math.ceil(height / pixelSize);
 
-        ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
-        ctxRaw.scale(pixelSize, pixelSize);
+            ctxRaw.resetTransform();
+            ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
+            ctxRaw.scale(pixelSize, pixelSize);
+        }
+    };
 
+    requestAnimationFrame(() => {
+        resizeCanvas();
         render(ui);
     });
 
     if (tickTimeMs > 0) {
         const onFrameTick = () => {
-            const { width, height } = body.getBoundingClientRect();
-            if (canvas.width !== width || canvas.height !== height) {
-                canvas.width = width;
-                canvas.height = height;
-
-                ui.ctx.width = Math.ceil(width / pixelSize);
-                ui.ctx.height = Math.ceil(height / pixelSize);
-
-                ctxRaw.resetTransform();
-                ctxRaw.translate(Math.floor(width / 2), Math.floor(height / 2));
-                ctxRaw.scale(pixelSize, pixelSize);
-            }
-
+            resizeCanvas();
             ++ui.ctx.tick;
             requestAnimationFrame(repaint);
+
+            window.setTimeout(onFrameTick, tickTimeMs);
         };
-        window.setInterval(onFrameTick, tickTimeMs);
+        onFrameTick();
     }
 
     return ui;

@@ -1,6 +1,8 @@
 import { Coords2D, Rect2D, WorldCoords } from '../coords';
 import { NoiseGenerator } from '../math/noise';
+import {RandomNumberGenerator} from '../math/rng';
 import { WorldObject } from '../object';
+import {AsteroidTile} from '../tile/AsteroidTile';
 import { Tile } from '../tile/types';
 import { rockTile } from '../tiles/rock';
 import { voidTile } from '../tiles/void';
@@ -32,12 +34,23 @@ class ElevationGenerator {
 }
 
 class TileTypeGenerator {
+    private cache: Record<string, Tile> = {};
+    private rng: RandomNumberGenerator;
+
+    constructor(seed: string) {
+        this.rng = new RandomNumberGenerator(seed);
+    }
+
     public generateTileType(coords: Readonly<WorldCoords>, elevation: number): Tile {
         if (elevation === -1) {
             return voidTile;
         }
 
-        return rockTile;
+        const cacheKey = `${coords.x}:${coords.z}`;
+        if (!this.cache[cacheKey]) {
+            this.cache[cacheKey] = new AsteroidTile(coords, this.rng);
+        }
+        return this.cache[cacheKey];
     }
 }
 
@@ -84,7 +97,7 @@ export interface WorldTile {
 
 export class WorldGenerator {
     private elevationGenerator = new ElevationGenerator(this.seed);
-    private tileTypeGenerator = new TileTypeGenerator();
+    private tileTypeGenerator = new TileTypeGenerator(this.seed);
     private skyGenerator = new SkyGenerator(this.seed);
 
     constructor(public readonly seed: string) {}
