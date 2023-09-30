@@ -14,13 +14,13 @@ const roundFuncBySign: Record<number, (n: number) => number> = {
     [-1]: Math.floor,
     [0]: Math.round,
     [1]: Math.ceil,
-}
+};
 export function roundWorldCoordsTo(world: Readonly<WorldCoords>, direction: Readonly<WorldCoords>): WorldCoords {
     return {
         x: roundFuncBySign[Math.sign(direction.x)](world.x),
         y: roundFuncBySign[Math.sign(direction.y)](world.y),
         z: roundFuncBySign[Math.sign(direction.z)](world.z),
-    }
+    };
 }
 
 export function add(w1: Readonly<WorldCoords>, w2: Readonly<WorldCoords>): WorldCoords {

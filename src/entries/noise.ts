@@ -1,11 +1,29 @@
-import { WorldCoords } from '../lib/coords';
-import { NoiseGenerator } from '../lib/math/noise';
+import { NoiseGenerator, NoiseLayerType } from '../lib/math/noise';
 import { connectToDom } from '../ui/dom';
 
+const query = new URLSearchParams(document.location.search.substring(1));
+const getNumber = (name: string) => {
+    const val = Number(query.get(name) || undefined);
+    if (Number.isNaN(val)) {
+        return undefined;
+    }
+    return val;
+};
+
+const layerTypes: Record<string, NoiseLayerType | undefined> = {
+    triangular: NoiseLayerType.Triangular,
+    tr: NoiseLayerType.Triangular,
+    square: NoiseLayerType.Square,
+    sq: NoiseLayerType.Square,
+    'displaced-square': NoiseLayerType.DisplacedSquare,
+    dsq: NoiseLayerType.DisplacedSquare,
+};
+
 const gen = new NoiseGenerator({
-    seed: new URLSearchParams(document.location.search.substring(1)).get('seed') ?? 'deadmouse',
-    octaves: 3,
-    gridSize: 32,
+    seed: query.get('seed') ?? 'deadmouse',
+    octaves: getNumber('octaves') ?? 3,
+    gridSize: getNumber('size') ?? 32,
+    layerType: layerTypes[query.get('shape') ?? ''] ?? NoiseLayerType.Triangular,
     min: 0,
     max: 255,
 });
@@ -18,13 +36,10 @@ connectToDom({
     render: (ui) => {
         for (let x = -SIZE; x <= SIZE; x++) {
             for (let z = -SIZE; z <= SIZE; z++) {
-                const point: WorldCoords = { x, y: 0, z };
-                const r = Math.max(0, Math.min(Math.floor(gen.generateAt(point)), 255));
+                const r = gen.generate(x, z);
                 const clr = `rgb(${r},${r},${r})`;
                 ui.ctx.putPixel(clr, x, z);
             }
         }
-
-        gen.dbg();
-    }
-})
+    },
+});

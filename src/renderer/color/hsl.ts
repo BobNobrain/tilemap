@@ -7,9 +7,9 @@ export interface HSLColor extends Color {
 }
 
 export function hsl(h: number, s: number, l: number): HSLColor {
-    return {h, s, l, color: `hsl(${h}, ${s}, ${l})`};
+    return { h, s, l, color: `hsl(${h}, ${s}, ${l})` };
 }
 
-export function hslOverride(base: HSLColor, patch: {h?: number; s?: number; l?: number}): HSLColor {
+export function hslOverride(base: HSLColor, patch: { h?: number; s?: number; l?: number }): HSLColor {
     return hsl(patch.h ?? base.h, patch.s ?? base.s, patch.l ?? base.l);
 }

@@ -12,11 +12,7 @@ export interface ConnectToDomOptions {
     render: (ui: PageUI) => void;
 }
 
-export function connectToDom({
-    pixelSize,
-    tickTimeMs,
-    render,
-}: ConnectToDomOptions): PageUI {
+export function connectToDom({ pixelSize, tickTimeMs, render }: ConnectToDomOptions): PageUI {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
     const ctxRaw = canvas.getContext('2d');
     const body = document.body;

@@ -7,11 +7,7 @@ export class TransparentTexture {
     private colors: TxColors;
     private anchor: Readonly<Coords2D>;
 
-    constructor(
-        colors: TexturePalette,
-        data: TxData,
-        anchor = CANVAS_ZERO,
-    ) {
+    constructor(colors: TexturePalette, data: TxData, anchor = CANVAS_ZERO) {
         this.colors = renderTxColors(colors, data);
         this.anchor = anchor;
     }
@@ -23,11 +19,7 @@ export class TransparentTexture {
                 const c = this.colors.colors[i];
 
                 if (c) {
-                    ctx.putPixel(
-                        c,
-                        coords.left + x - this.anchor.left,
-                        coords.top + y - this.anchor.top,
-                    );
+                    ctx.putPixel(c, coords.left + x - this.anchor.left, coords.top + y - this.anchor.top);
                 }
 
                 ++i;

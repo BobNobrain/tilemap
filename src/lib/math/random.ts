@@ -12,7 +12,7 @@ export interface CongruentGeneratorOptions {
     outputScale?: number;
 }
 
-const rnd = () => (Math.random() / 4 + 0.75);
+const rnd = () => Math.random() / 4 + 0.75;
 
 export function createCongruentGenerator({
     nDimensions,
@@ -23,5 +23,5 @@ export function createCongruentGenerator({
         coeffs.push(rnd() * outputScale);
     }
     const bias = rnd() * outputScale;
-    return (vals, limits) => limits.low + Math.abs(dotProduct(vals, coeffs) + bias) % (limits.high - limits.low);
+    return (vals, limits) => limits.low + (Math.abs(dotProduct(vals, coeffs) + bias) % (limits.high - limits.low));
 }

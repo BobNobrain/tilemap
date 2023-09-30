@@ -16,12 +16,7 @@ export class OffsetedObject implements WorldObject {
     private topBound: number;
     private bottomBound: number;
 
-    constructor(
-        colors: TexturePalette,
-        txData: TxData,
-        anchor = CANVAS_ZERO,
-        baseStartsAtY = 0,
-    ) {
+    constructor(colors: TexturePalette, txData: TxData, anchor = CANVAS_ZERO, baseStartsAtY = 0) {
         this.texture = new TransparentTexture(colors, txData, anchor);
 
         this.rndLeft = createCongruentGenerator({

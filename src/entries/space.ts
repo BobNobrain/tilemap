@@ -19,7 +19,8 @@ connectToDom({
         ui.ctxRaw.fillStyle = 'black';
         ui.ctxRaw.fillRect(-w2, -h2, ui.ctx.width, ui.ctx.height);
 
-        if (!skyViewport ||
+        if (
+            !skyViewport ||
             skyViewport.topLeft.top !== viewport.topLeft.top ||
             skyViewport.topLeft.left !== viewport.topLeft.left ||
             skyViewport.bottomRight.left !== viewport.bottomRight.left ||
@@ -49,4 +50,3 @@ connectToDom({
     pixelSize: 2,
     tickTimeMs: 1000,
 });
-

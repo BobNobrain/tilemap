@@ -1,3 +1,3 @@
-import {EmptyTile} from '../tile/EmptyTile';
+import { EmptyTile } from '../tile/EmptyTile';
 
 export const voidTile = new EmptyTile();

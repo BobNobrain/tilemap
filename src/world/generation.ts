@@ -26,7 +26,7 @@ class ElevationGenerator {
     }
 
     public generateElevation(coords: Readonly<WorldCoords>): number {
-        const n = this.noise.generateAt(coords);
+        const n = this.noise.generate(coords.x, coords.z);
         if (n <= EMPTINESS_HEIGHT_BOUNDARY) {
             return 0;
         }
@@ -46,7 +46,7 @@ class TileTypeGenerator {
             octaves: 2,
             gridSize: 32,
             min: 0,
-            max: 3
+            max: 3,
         });
     }
 
@@ -55,7 +55,7 @@ class TileTypeGenerator {
             return voidTile;
         }
 
-        const biome = this.temperatureNoise.generateAt(coords);
+        const biome = this.temperatureNoise.generate(coords.x, coords.z);
 
         if (biome === 0) {
             return icyRockTile;
@@ -93,9 +93,9 @@ class SkyGenerator {
 
         for (let left = leftMin; left < leftMax; ++left) {
             for (let top = topMin; top < topMax; ++top) {
-                const noise = this.noise.generateAt({x: left, y: 2, z: top});
+                const noise = this.noise.generate(left, top);
                 if (noise === 256) {
-                    result.push({left, top});
+                    result.push({ left, top });
                 }
             }
         }

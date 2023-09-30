@@ -1,6 +1,6 @@
-import { WorldCoords, WORLD_ZERO } from '../lib/coords';
+import { /*WorldCoords,*/ WORLD_ZERO } from '../lib/coords';
 import { grassTile } from '../renderer/tiles/grass';
-import { sandTile } from '../renderer/tiles/sand';
+// import { sandTile } from '../renderer/tiles/sand';
 import { connectToDom } from '../ui/dom';
 
 connectToDom({
@@ -12,7 +12,7 @@ connectToDom({
             eastElevationPx: 2,
             isNorthOverhang: false,
             isWestOverhang: false,
-         });
+        });
 
         // const N = 5;
         // for (let x = -N; x <= N; x++) {
@@ -28,5 +28,3 @@ connectToDom({
         // }
     },
 });
-
-

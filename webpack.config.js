@@ -2,14 +2,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const entries = [
+    'single',
+    'noise',
+    'space',
+    'map',
+];
+
 /** @type {import('webpack').Configuration} */
 const config = {
     mode: 'development',
-    entry: {
-        single: './src/entries/single.ts',
-        noise: './src/entries/noise.ts',
-        space: './src/entries/space.ts',
-    },
+    entry: Object.fromEntries(entries.map((name) => [name, `./src/entries/${name}.ts`])),
     module: {
         rules: [
             {
@@ -27,21 +30,11 @@ const config = {
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-        new HtmlWebpackPlugin({
+        ...entries.map((name) => new HtmlWebpackPlugin({
             template: './html/index.html',
-            filename: 'single.html',
-            excludeChunks: ['noise', 'space'],
-        }),
-        new HtmlWebpackPlugin({
-            template: './html/index.html',
-            filename: 'noise.html',
-            excludeChunks: ['single', 'space'],
-        }),
-        new HtmlWebpackPlugin({
-            template: './html/index.html',
-            filename: 'space.html',
-            excludeChunks: ['single', 'noise'],
-        }),
+            filename: `${name}.html`,
+            excludeChunks: entries.filter((other) => other !== name),
+        })),
     ],
     optimization: {
         splitChunks: false,

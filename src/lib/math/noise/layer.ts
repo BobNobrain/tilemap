@@ -15,11 +15,7 @@ export abstract class NoiseLayer {
 
     private gridValuesCache: Record<string, number> = {};
 
-    constructor({
-        rng,
-        gridSize,
-        amplitude,
-    }: NoiseLayerConfig) {
+    constructor({ rng, gridSize, amplitude }: NoiseLayerConfig) {
         this.gridSize = gridSize;
         this.ampl = amplitude;
 

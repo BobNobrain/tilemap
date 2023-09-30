@@ -1,9 +1,28 @@
 import { BLACK, WHITE } from '../palette/samples';
 import {
-    P0, P1, P2, P3, P4, P5, P6,
-    S0, S1, S2, S3, S4, S5, S6,
-    T0, T1, T2, T3, T4, T5, T6,
-    WH, BL,
+    P0,
+    P1,
+    P2,
+    P3,
+    P4,
+    P5,
+    P6,
+    S0,
+    S1,
+    S2,
+    S3,
+    S4,
+    S5,
+    S6,
+    T0,
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
+    WH,
+    BL,
 } from './constants';
 import { TexturePalette, TxColors, TxData } from './types';
 
@@ -68,15 +87,15 @@ export function darker(txDataItem: number, step = 1): number {
     if (txDataItem < 0) {
         return txDataItem;
     }
-    const tone = txDataItem & 0x0F;
-    const palette = txDataItem & 0xF0;
+    const tone = txDataItem & 0x0f;
+    const palette = txDataItem & 0xf0;
     return palette | Math.max(MIN_TONE_NUMBER, tone - step);
 }
 export function lighter(txDataItem: number, step = 1): number {
     if (txDataItem < 0) {
         return txDataItem;
     }
-    const tone = txDataItem & 0x0F;
-    const palette = txDataItem & 0xF0;
+    const tone = txDataItem & 0x0f;
+    const palette = txDataItem & 0xf0;
     return palette | Math.min(tone + step, MAX_TONE_NUMBER);
 }

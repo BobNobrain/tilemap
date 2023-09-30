@@ -1,9 +1,4 @@
-export {
-    add,
-    getElevationDifferencePx,
-    getElevationPx,
-    round2DCoords,
-} from './canvas';
+export { add, getElevationDifferencePx, getElevationPx, round2DCoords } from './canvas';
 
 export {
     CANVAS_ZERO,

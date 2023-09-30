@@ -15,10 +15,7 @@ if (OFFSETS.l.length !== HALF_TILE_WIDTH || OFFSETS.r.length !== HALF_TILE_WIDTH
 export class SimpleSideTexture implements SideTexture {
     private colors: string[];
 
-    constructor(
-        colors: TexturePalette,
-        data: number[],
-    ) {
+    constructor(colors: TexturePalette, data: number[]) {
         if (data.length % HALF_TILE_WIDTH !== 0) {
             throw new Error('Invalid texture data length');
         }
