@@ -9,7 +9,7 @@ all: typecheck entries
 
 .PHONY: clean
 clean:
-	rm -r $(OUTDIR)
+	rm -rf $(OUTDIR)
 
 #
 # checkers
@@ -30,18 +30,24 @@ typecheck:
 #
 # entries
 #
-.PHONY: entries map.entry noise.entry single.entry space.entry
+ENTRIES = map noise single space
+ENTRIES_FILENAMES = $(addsuffix .entry,$(ENTRIES))
+.PHONY: entries $(ENTRIES_FILENAMES)
 
-entries: $(OUTDIR) map.entry noise.entry single.entry space.entry
+entries: $(OUTDIR) $(ENTRIES_FILENAMES)
 
 $(OUTDIR):
 	mkdir $(OUTDIR)
 
-%.entry: $(OUTDIR)/%.html
-	esbuild $(SRCDIR)/entries/$*.ts --bundle --outdir=$(OUTDIR)
+$(OUTDIR)/%.html: html/index.html $(OUTDIR)
+	sed 's/$$SCRIPT/$*.js/' $< > $@
 
-$(OUTDIR)/%.html: html/index.html
-	sed 's/$$SCRIPT/$*.ts/' $< > $@
+define ENTRY_RULE_TEMPLATE =
+$(1).entry: $(OUTDIR)/$(1).html
+	esbuild $(SRCDIR)/entries/$(1).ts --bundle --outdir=$(OUTDIR)
+endef
+
+$(foreach entry,$(ENTRIES),$(eval $(call ENTRY_RULE_TEMPLATE,$(entry))))
 
 #
 # assets
