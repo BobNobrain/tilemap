@@ -49,6 +49,10 @@ export class RandomNumberGenerator {
         return this.seed;
     }
 
+    detached(): () => number {
+        return sfc32(...this.coeffs);
+    }
+
     forInt(int: number): () => number {
         const [ia, ib, ic, id] = cyrb128(int.toString(16));
         const [sa, sb, sc, sd] = this.coeffs;

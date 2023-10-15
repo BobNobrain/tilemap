@@ -5,8 +5,8 @@ Just a repo where I play around with canvas, drawings, noise generation and some
 ## Build
 
 ```bash
-npm run build
+make
 ```
 
 This will generate `dist/<entrypoint>.html` and `dist/<entrypoint>.js` for every
-entrypoint in `src/entries`. New entries are added manually via `webpack.config.js`.
+entrypoint in `src/entries`. New entries are added manually via `Makefile`.

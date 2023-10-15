@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "moduleResolution": "node",
+        "target": "ES2021",
+        "outDir": "./build/generator"
+    },
+    "include": [
+        "generator",
+        "generated"
+    ]
+}

@@ -1,0 +1,17 @@
+const TILE_WIDTH = 16;
+const TOP_WIDTHS_BY_ROW = [2, 6, 10, 14, 16, 14, 10, 6, 2];
+const TILE_SIDE_WIDTH = TILE_WIDTH / 2;
+const TILE_SIDE_HEIGHT = 8;
+const TOP_SIDE_HEIGHT = TOP_WIDTHS_BY_ROW.length;
+const TILE_FULL_HEIGHT = TOP_WIDTHS_BY_ROW.length + TILE_SIDE_HEIGHT;
+const TILE_SIDE_START_Y = 5;
+
+export const AtlasConstants = {
+    TILE_WIDTH,
+    TILE_FULL_HEIGHT,
+    TOP_SIDE_HEIGHT,
+    TOP_WIDTHS_BY_ROW,
+    TILE_SIDE_WIDTH,
+    TILE_SIDE_HEIGHT,
+    TILE_SIDE_START_Y,
+} as const;
