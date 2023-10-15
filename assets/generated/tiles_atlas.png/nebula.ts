@@ -2,6 +2,7 @@ import { RandomNumberGenerator } from '../../../src/lib/math/rng';
 import { remapLinear } from '../../../src/lib/math/linear';
 import { AtlasConstants } from '../../../src/renderer/tiles/atlas';
 import { ImageGenerator } from '../../generator/image';
+import { TILE_ZONES, TileZone } from './pixels';
 
 export type NebulaTilePalette = {
     primary: string[];
@@ -13,43 +14,6 @@ export type NebulaTileOptions = {
     adjacentRightTop: boolean;
     adjacentRightBottom: boolean;
 };
-
-// const T = -1;
-// prettier-ignore
-// const TOP_TXDATA: number[] = [
-//     T, 1,
-//     1, T, T, T, 3, 1,
-//     1, 1, 2, 1, 3, 3, T, 1, T, T,
-//     1, 2, T, 1, T, 2, T, T, 1, T, 3, T, 1, T,
-//     T, T, T, 1, 2, T, 3, 4, T, T, 1, T, 3, 3, 1, T,
-// ];
-
-enum TileZone { Dead, Top, LeftSide, RightSide }
-const TILE_ZONES = ((): TileZone[][] => {
-    const D = TileZone.Dead;
-    const T = TileZone.Top;
-    const L = TileZone.LeftSide;
-    const R = TileZone.RightSide;
-    return [
-        [D, D, D, D, D, D, D, T, T, D, D, D, D, D, D, D],
-        [D, D, D, D, D, T, T, T, T, T, T, D, D, D, D, D],
-        [D, D, D, T, T, T, T, T, T, T, T, T, T, D, D, D],
-        [D, T, T, T, T, T, T, T, T, T, T, T, T, T, T, D],
-        [T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T],
-        [L, T, T, T, T, T, T, T, T, T, T, T, T, T, T, R],
-        [L, L, L, T, T, T, T, T, T, T, T, T, T, R, R, R],
-        [L, L, L, L, L, T, T, T, T, T, T, R, R, R, R, R],
-        [L, L, L, L, L, L, L, T, T, R, R, R, R, R, R, R],
-        [L, L, L, L, L, L, L, L, R, R, R, R, R, R, R, R],
-        [L, L, L, L, L, L, L, L, R, R, R, R, R, R, R, R],
-        [L, L, L, L, L, L, L, L, R, R, R, R, R, R, R, R],
-        [L, L, L, L, L, L, L, L, R, R, R, R, R, R, R, R],
-        [D, L, L, L, L, L, L, L, R, R, R, R, R, R, R, D],
-        [D, D, D, L, L, L, L, L, R, R, R, R, R, D, D, D],
-        [D, D, D, D, D, L, L, L, R, R, R, D, D, D, D, D],
-        [D, D, D, D, D, D, D, L, R, D, D, D, D, D, D, D],
-    ];
-})();
 
 const MASS_CENTER_X = AtlasConstants.TILE_WIDTH / 2 - 0.5;
 const MASS_CENTER_Y = (AtlasConstants.TOP_SIDE_HEIGHT * 2) / 3 - 0.5;
@@ -101,7 +65,7 @@ export function createNebulaTile(palette: NebulaTilePalette, opts: NebulaTileOpt
                     let fadeFactor = 0;
                     if (!hasAdjacent) {
                         const dx = MASS_CENTER_X - x;
-                        const dy = MASS_CENTER_Y - y; // should fade out ~twice as fast, due to view angle
+                        const dy = MASS_CENTER_Y - y;
                         fadeFactor = Math.sqrt(dx * dx + dy * dy) / AtlasConstants.TILE_SIDE_WIDTH;
                     }
 

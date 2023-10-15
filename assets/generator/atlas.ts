@@ -36,6 +36,7 @@ export function createAtlas(rows: (ImageGenerator | null)[][]): ImageGenerator {
                 for (let col = 0; col < columnsCount; ++col) {
                     const cell = rows[row][col];
                     if (!cell) {
+                        x += maxWidthsByColumn[col];
                         continue;
                     }
 

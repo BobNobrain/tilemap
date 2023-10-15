@@ -1,5 +1,6 @@
 import { ImageGenerator } from '../../generator/image';
 import { AtlasConstants } from '../../../src/renderer/tiles/atlas';
+import { TILE_EDGES, TileEdge } from './pixels';
 
 type NoisyPaletteColor = 'P0' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'S2' | 'S4';
 
@@ -88,8 +89,8 @@ export function createSolidTile(
                 const startX = (AtlasConstants.TILE_WIDTH - TOP_WIDTHS_BY_ROW[y]) / 2;
                 const endX = startX + TOP_WIDTHS_BY_ROW[y];
                 for (let x = startX; x < endX; ++x) {
-                    const isLeftEdge = y < AtlasConstants.TILE_SIDE_START_Y - 1 && x === startX;
-                    const isRightEdge = y < AtlasConstants.TILE_SIDE_START_Y - 1 && x === endX - 1;
+                    const isLeftEdge = TILE_EDGES[y][x] === TileEdge.TopLeftTop;
+                    const isRightEdge = TILE_EDGES[y][x] === TileEdge.TopRightTop;
                     const shouldLightenUp = (options.leftBorder && isLeftEdge) || (options.rightBorder && isRightEdge);
 
                     const txdata = SOLID_TOP_TXDATA[topTxdataIndex++];

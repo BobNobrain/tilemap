@@ -38,7 +38,7 @@ function transpose<T>(tss: T[][]): T[][] {
 }
 
 const GRAY_ROCK_PALETTE: SolidTilePalette = { primary: ROCKY_GRAY_SHADES };
-const BROWN_ROCK_PALETTE: SolidTilePalette = { primary: ROCKY_BROWN_SHADES, secondary: ROCKY_GRAY_SHADES };
+const BROWN_ROCK_PALETTE: SolidTilePalette = { primary: ROCKY_BROWN_SHADES };
 const ICE_PALETTE: SolidTilePalette = { primary: ICY_BLUE_SHADES };
 
 const COLD_NEBULA_PALETTE: NebulaTilePalette = { primary: ICY_BLUE_SHADES };
