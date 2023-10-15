@@ -45,8 +45,6 @@ export class NoiseGenerator {
 
     constructor(config: NoiseGeneratorConfig) {
         this.config = Object.assign(DEFAULT_OPTS, config);
-        console.log(this.config);
-
         this.rng = new RandomNumberGenerator(this.config.seed);
 
         let amplSum = 0;

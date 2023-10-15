@@ -1,3 +1,4 @@
+import { BiomeType } from './BiomeType';
 import { ResourceType } from './ResourceType';
 import { TileMaterial } from './TileMaterial';
 
@@ -12,4 +13,13 @@ export interface TileData {
     elevation: number;
 
     resources: TileResource[];
+
+    debug?: {
+        temp: number;
+        solidity: number;
+        elevation: number;
+        tileVariation: number;
+        biomeVariation: number;
+        biome: BiomeType;
+    };
 }

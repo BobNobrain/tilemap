@@ -41,3 +41,21 @@ export function getChunkBoundaries(c: Readonly<ChunkCoords>): ChunkBoundaries {
         maxZ: minZ + CHUNK_SIZE,
     };
 }
+
+export function* iterateChunkCoords(inRect: {
+    minWorldX: number;
+    minWorldZ: number;
+    maxWorldX: number;
+    maxWorldZ: number;
+}): Generator<ChunkCoords> {
+    const minChunkX = Math.floor(inRect.minWorldX / CHUNK_SIZE);
+    const minChunkZ = Math.floor(inRect.minWorldZ / CHUNK_SIZE);
+    const maxChunkX = Math.ceil(inRect.maxWorldX / CHUNK_SIZE);
+    const maxChunkZ = Math.ceil(inRect.maxWorldZ / CHUNK_SIZE);
+
+    for (let chunkX = minChunkX; chunkX < maxChunkX; chunkX++) {
+        for (let chunkZ = minChunkZ; chunkZ < maxChunkZ; chunkZ++) {
+            yield { chunkX, chunkZ };
+        }
+    }
+}

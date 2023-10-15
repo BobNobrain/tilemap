@@ -1,90 +1,99 @@
-import { WorldCoords } from '../../lib/coords';
-import { RANDOM_INPUT_MAX, RANDOM_INPUT_MIN } from '../../lib/math/RandomInput';
 import { NoiseGenerator } from '../../lib/math/noise';
-import { BiomeType } from '../data/BiomeType';
+// import { BiomeType } from '../data/BiomeType';
 import { ChunkData } from '../data/ChunkData';
-import { TileMaterial } from '../data/TileMaterial';
 import { ChunkCoords, getChunkBoundaries } from '../data/coords';
 import { generateBiomeType } from './biomes';
+import { generateChunkTile } from './tiles';
 
 export interface WorldGeneratorOptions {
     seed: string;
 }
 
 export class WorldGenerator {
-    // private biomeTemp: NoiseGenerator;
-    // private biomeVariation: NoiseGenerator;
-    private biomeNoise: NoiseGenerator;
-    private elevationNoise: NoiseGenerator;
+    private biomeSolidity: NoiseGenerator;
+    private biomeTemp: NoiseGenerator;
+    private biomeVariation: NoiseGenerator;
+    private elevation: NoiseGenerator;
+    private tileVariation: NoiseGenerator;
 
     constructor(private options: WorldGeneratorOptions) {
-        this.biomeNoise = new NoiseGenerator({
-            seed: options.seed,
-            min: RANDOM_INPUT_MIN,
-            max: RANDOM_INPUT_MAX,
+        this.biomeSolidity = new NoiseGenerator({
+            seed: options.seed + ':bs',
             octaves: 2,
-            gridSize: 32,
+            gridSize: 64,
         });
 
-        this.elevationNoise = new NoiseGenerator({
-            seed: options.seed,
-            min: RANDOM_INPUT_MIN,
-            max: RANDOM_INPUT_MAX,
+        this.biomeTemp = new NoiseGenerator({
+            seed: options.seed + ':bt',
             octaves: 3,
+            gridSize: 128,
+        });
+
+        this.biomeVariation = new NoiseGenerator({
+            seed: options.seed + ':bv',
+            octaves: 2,
+            gridSize: 64,
+        });
+
+        this.elevation = new NoiseGenerator({
+            seed: options.seed + ':ev',
+            octaves: 4,
+            gridSize: 32,
+            damping: 0.7,
+        });
+
+        this.tileVariation = new NoiseGenerator({
+            seed: options.seed + ':tv',
+            octaves: 2,
             gridSize: 16,
         });
     }
 
-    generateChunk(at: Readonly<ChunkCoords>): ChunkData {
+    generateChunk(at: Readonly<ChunkCoords>, opts: { debug?: boolean } = {}): ChunkData {
         const chunk: ChunkData = {
-            biome: this.generateBiome(at),
+            // biome: this.generateBiome(at),
             tiles: [],
         };
 
-        // const bounds = getChunkBoundaries(at);
-        // for (let x = bounds.minX; x < bounds.maxX; x++) {
-        //     for (let z = bounds.minZ; z < bounds.maxZ; z++) {
-        //         const tileCoords: WorldCoords = { x, y: 0, z };
-        //         const elevation = this.generateElevation(tileCoords);
+        const bounds = getChunkBoundaries(at);
+        for (let x = bounds.minX; x < bounds.maxX; x++) {
+            for (let z = bounds.minZ; z < bounds.maxZ; z++) {
+                const temp = this.biomeTemp.generate(x, z);
+                const biomeVariation = this.biomeVariation.generate(x, z);
 
-        //         if (elevation === 0) {
-        //             chunk.tiles.push({
-        //                 material: TileMaterial.Void,
-        //                 resources: [],
-        //             });
-        //             continue;
-        //         }
+                const biome = generateBiomeType({
+                    solidity: this.biomeSolidity.generate(x, z),
+                    temp,
+                    variation: biomeVariation,
+                });
 
-        //         chunk.tiles.push({
-        //             material: this.generateTileMaterial(tileCoords),
-        //             resources: [],
-        //         });
-        //     }
-        // }
+                const elevation = this.elevation.generate(x, z);
+                const tileVariation = this.tileVariation.generate(x, z);
+
+                const tile = generateChunkTile({
+                    biome: biome.type,
+                    elevation,
+                    solidity: biome.solidity,
+                    resourceDensity: 0,
+                    resourceVariation: 0,
+                    variation: tileVariation,
+                });
+
+                if (opts.debug) {
+                    tile.debug = {
+                        solidity: biome.solidity,
+                        temp,
+                        biomeVariation: biomeVariation,
+                        tileVariation,
+                        elevation,
+                        biome: biome.type,
+                    };
+                }
+
+                chunk.tiles.push(tile);
+            }
+        }
 
         return chunk;
-    }
-
-    private generateBiome(at: Readonly<ChunkCoords>): BiomeType {
-        return generateBiomeType({
-            solidity: 0,
-            temp: 0,
-            variation: 0,
-        });
-    }
-
-    private generateTileMaterial(at: Readonly<WorldCoords>): TileMaterial {
-        const biome = this.generateBiome({ chunkX: 0, chunkZ: 0 });
-        switch (biome) {
-            case BiomeType.Brown:
-                return TileMaterial.BrownRock;
-            case BiomeType.Gray:
-                return TileMaterial.GrayRock;
-            case BiomeType.Icy:
-                return TileMaterial.Ice;
-
-            default:
-                return TileMaterial.Void;
-        }
     }
 }

@@ -4,6 +4,7 @@ export interface PageUI {
     canvas: HTMLCanvasElement;
     ctxRaw: CanvasRenderingContext2D;
     ctx: RenderContext;
+    repaint: () => void;
 }
 
 export interface ConnectToDomOptions {
@@ -25,9 +26,8 @@ export function connectToDom({ pixelSize, tickTimeMs, render }: ConnectToDomOpti
         canvas,
         ctx: new RenderContextImpl(ctxRaw, 0, 0),
         ctxRaw,
+        repaint: () => render(ui),
     };
-
-    const repaint = () => render(ui);
 
     const resizeCanvas = () => {
         const { width, height } = body.getBoundingClientRect();
@@ -53,7 +53,7 @@ export function connectToDom({ pixelSize, tickTimeMs, render }: ConnectToDomOpti
         const onFrameTick = () => {
             resizeCanvas();
             ++ui.ctx.tick;
-            requestAnimationFrame(repaint);
+            requestAnimationFrame(ui.repaint);
 
             window.setTimeout(onFrameTick, tickTimeMs);
         };
